@@ -1,13 +1,14 @@
 <?php
+require_once 'config.php';
 require_once 'lib/couch.php';
 require_once 'lib/couchClient.php';
 require_once 'lib/couchDocument.php';
-$client = new couchClient ('http://localhost:5984',"jeocouch");
+$client = new couchClient ($COUCH_CLIENT,$COUCH_DB);
 
 
 $last_seq = 0;
 $prefix = "wp_dhgp3n_";
-$mysqli = new mysqli("localhost", "root", "h6r49QuZ6yx7W35", "rea2");
+$mysqli = new mysqli($MYSQL_SERVER, $MYSQL_USER, $MYSQL_PASS, $MYSQL_DB);
 /* check connection */
 if ($mysqli->connect_errno) {
     printf("\nConnect failed: %s\n", $mysqli->connect_error);
@@ -29,9 +30,9 @@ if ($result = $mysqli->query("SELECT * FROM jeos WHERE id = 1")) {
 
 
 //STEP 2: mysql (geojson) to CouchDB sync
-//$data = file_get_contents("http://www.mapasdigitais.org/rea/?geojson=1");
+$data = file_get_contents($GEOJSON_DATASOURCE);
+//$data = file_get_contents("http://200.10.150.230/rea/?geojson=1");
 echo "\n\n======STEP 2======\n\n";
-$data = file_get_contents("http://200.10.150.230/rea/?geojson=1");
 $data = json_decode($data, true); 
 
 foreach($data["features"] as $post){	
